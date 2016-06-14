@@ -20,7 +20,7 @@ type Server struct {
 }
 
 func (s *Server) trimOrigin(name string) string {
-	return strings.TrimSuffix(name, s.ctx.Config.Origin)
+	return strings.TrimSuffix(name, "."+s.ctx.Origin)
 }
 
 func (s *Server) fuzzyMatchHost(name string, rs Records) Records {
@@ -170,7 +170,8 @@ func main() {
 	}
 
 	dns.HandleFunc(".", s.HandleRequest)
-	server := &dns.Server{Addr: s.ctx.Config.Address, Net: "udp"}
+	logger.Printf("Server listening to address: %v\n", s.ctx.Address)
+	server := &dns.Server{Addr: s.ctx.Address, Net: "udp"}
 	err = server.ListenAndServe()
 	fmt.Println(err)
 }

@@ -12,10 +12,8 @@ const (
 )
 
 type Context struct {
-	Config struct {
-		Origin  string
-		Address string
-	}
+	Origin  string
+	Address string
 
 	Records Records
 }
