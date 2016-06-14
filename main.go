@@ -65,7 +65,7 @@ func (s *Server) handleARecords(originalName string) []dns.RR {
 	return ret
 }
 
-func (s *Server) handleCNAMERecords(originalName string) []dns.RR {
+func (s *Server) handleCNAMERecords(originalName string, rec bool) []dns.RR {
 	name := s.trimOrigin(originalName)
 	cs := s.ctx.Records.CNAMERecords()
 	matches := s.fuzzyMatchHost(name, cs)
@@ -84,21 +84,23 @@ func (s *Server) handleCNAMERecords(originalName string) []dns.RR {
 
 	// According to RFC1035, an exact match on the whole zonefile for the
 	// A record should be done.
-	as := s.ctx.Records.ARecords()
-	for _, c := range matches {
-		oname := c.Data
-		name := s.trimOrigin(oname)
-		for _, a := range as {
-			if a.Host == name {
-				ret = append(ret, &dns.A{
-					Hdr: dns.RR_Header{
-						Name:   oname,
-						Rrtype: dns.TypeA,
-						Class:  dns.ClassINET,
-						Ttl:    a.TTL,
-					},
-					A: net.ParseIP(a.Data),
-				})
+	if rec {
+		as := s.ctx.Records.ARecords()
+		for _, c := range matches {
+			oname := c.Data
+			name := s.trimOrigin(oname)
+			for _, a := range as {
+				if a.Host == name {
+					ret = append(ret, &dns.A{
+						Hdr: dns.RR_Header{
+							Name:   oname,
+							Rrtype: dns.TypeA,
+							Class:  dns.ClassINET,
+							Ttl:    a.TTL,
+						},
+						A: net.ParseIP(a.Data),
+					})
+				}
 			}
 		}
 	}
@@ -113,13 +115,13 @@ func (s *Server) handleQuestion(q dns.Question) []dns.RR {
 	case dns.TypeA:
 		as := s.handleARecords(q.Name)
 		if as == nil || len(as) == 0 {
-			return s.handleCNAMERecords(q.Name)
+			return s.handleCNAMERecords(q.Name, true)
 		} else {
 			return as
 		}
 
 	case dns.TypeCNAME:
-		return s.handleCNAMERecords(q.Name)
+		return s.handleCNAMERecords(q.Name, false)
 
 	default:
 		return nil
