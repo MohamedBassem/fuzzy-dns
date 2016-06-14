@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net"
 	"os"
@@ -160,7 +159,7 @@ func (s *Server) HandleRequest(w dns.ResponseWriter, r *dns.Msg) {
 
 	err := w.WriteMsg(resp)
 	if err != nil {
-		s.logger.Println(err.Error())
+		s.logger.Println("ERROR : " + err.Error())
 	}
 	w.Close()
 
@@ -172,12 +171,7 @@ func main() {
 	verbose := flag.Bool("verbose", false, "Verbose log with each request")
 	flag.Parse()
 
-	var logger *log.Logger
-	if *verbose {
-		logger = log.New(os.Stdout, "", log.LstdFlags)
-	} else {
-		logger = log.New(ioutil.Discard, "", log.LstdFlags)
-	}
+	logger := log.New(os.Stdout, "", log.LstdFlags)
 
 	if *configFile == "" {
 		fmt.Println("--config flag cannot be empty")
@@ -192,7 +186,11 @@ func main() {
 
 	s := NewServer(ctx, logger)
 
-	dns.HandleFunc(".", s.LoggedRequest(s.HandleRequest))
+	if *verbose {
+		dns.HandleFunc(".", s.LoggedRequest(s.HandleRequest))
+	} else {
+		dns.HandleFunc(".", s.HandleRequest)
+	}
 	logger.Printf("Server listening to address: %v\n", s.ctx.Address)
 	server := &dns.Server{Addr: s.ctx.Address, Net: "udp"}
 	err = server.ListenAndServe()
