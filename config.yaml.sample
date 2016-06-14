@@ -8,6 +8,6 @@ records:
     - host: "tmp2"
       ttl: 0
       type: "CNAME"
-      data: "example.com"
+      data: "example.com."
 
 
