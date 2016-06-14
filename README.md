@@ -4,6 +4,8 @@ A very simple domain name server that fuzzily matches its records. This fuzzy ma
 
 ***Currently only A and CNAME records are supported.***
 
+*It's not a public DNS server, it's a privately managed DNS server. You get control on the domains to resolve. Check the actual deployment section.*
+
 ### Why?
 
 Because it's fun. I googled and I didn't find something like this, so I implemented it. Is it useful? Honestly, I don't know.
