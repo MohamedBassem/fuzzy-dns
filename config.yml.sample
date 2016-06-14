@@ -1,7 +1,7 @@
 origin: "example.com"
 address: "0.0.0.0:5333"
 records:
-    - host: "tmp"
+    - host: "google"
       ttl: 0
       type: "A"
       data: "1.1.1.1"
@@ -9,13 +9,7 @@ records:
       ttl: 0
       type: "A"
       data: "1.1.1.2"
-    - host: "tmp2"
-      ttl: 0
-      type: "CNAME"
-      data: "example.com."
     - host: "wontfind"
       ttl: 0
       type: "CNAME"
       data: "willfind.example.com."
-
-
