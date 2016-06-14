@@ -12,4 +12,4 @@ records:
     - host: "wontfind"
       ttl: 0
       type: "CNAME"
-      data: "willfind.example.com."
+      data: "willfind.example.com"

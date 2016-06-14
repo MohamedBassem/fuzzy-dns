@@ -35,8 +35,7 @@ records:
     - host: "wontfind"
       ttl: 0
       type: "CNAME"
-      # Notice the trailing dot
-      data: "willfind.example.com."
+      data: "willfind.example.com"
 ```
 
 
