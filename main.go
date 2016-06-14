@@ -170,7 +170,7 @@ func main() {
 	}
 
 	dns.HandleFunc(".", s.HandleRequest)
-	server := &dns.Server{Addr: "0.0.0.0:5333", Net: "udp"}
+	server := &dns.Server{Addr: s.ctx.Config.Address, Net: "udp"}
 	err = server.ListenAndServe()
 	fmt.Println(err)
 }

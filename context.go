@@ -13,7 +13,8 @@ const (
 
 type Context struct {
 	Config struct {
-		Origin string
+		Origin  string
+		Address string
 	}
 
 	Records Records
