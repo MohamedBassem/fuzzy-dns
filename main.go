@@ -39,7 +39,7 @@ func (s *Server) fuzzyMatchHost(name string, rs Records) Records {
 
 	ret := Records{}
 	for _, r := range rs {
-		if r.Host == ranks[0].Source {
+		if r.Host == ranks[0].Target {
 			ret = append(ret, r)
 		}
 	}
