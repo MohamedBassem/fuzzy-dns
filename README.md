@@ -50,7 +50,7 @@ If you want to deploy it for fun. You will have to :
 go get github.com/MohamedBassem/fuzzy-dns
 
 # Copy the sample config and modify it if needed
-cp config.yml.sample config.yml
+cp $GOPATH/src/github.com/MohamedBassem/fuzzy-dns/config.yml.sample config.yml
 
 # Run it (Assuming that $GOPATH/bin is in your path)
 fuzzy-dns --config config.yml --verbose
@@ -86,6 +86,28 @@ willfind.example.com.   0       IN      A       1.1.1.2
 $ dig +noall +answer @localhost -p 5333 CNAME wontfind.example.com
 wontfind.example.com.   0       IN      CNAME   willfind.example.com.
 ```
+
+#### Actual Deployment
+
+Let's say we own the domain `example.com`. If you won't to resolve the subdomains of `fuzzy.example.com` fuzzily you should do the following:
+
+*Note, it can also be done with the subdomains of "example.com" directly, but you probably don't want to do this while the server is still in beta*
+
+
+- Start a publicly accessible machine (on DigitalOcean, AWS, ..).
+- Add an `NS` record in your domain's zone file (e.g. on Godaddy or whatever) with the host `fuzzy` and value `fuzzyns.example.com`.
+- Add another `A` record in your zone file with the host `fuzzyns` and the value is the IP of the public server you created.
+- By now, the resolution of the subdomain `fuzzy` is delegated to the server.
+- Now on the server you created, pull fuzzy-dns using `go get github.com/MohamedBassem/fuzzy-dns`.
+- Copy the sample config `cp $GOPATH/src/github.com/MohamedBassem/fuzzy-dns/config.yml.sample config.yml`
+- Do the following changes to the config file:
+  - Change the origin to `fuzzy.example.com`.
+  - Change the records to some that actually make sense.
+- Start the server with `$GOPATH/bin/fuzzy-dns --config config.yml`.
+- In your browser try accessing `google.fuzzy.example.com` or `gogle.fuzzy.example.com` and they will all open the same IP you configured.
+
+*You should replace "example.com" with your actual domain in all the previous examples.*
+
 
 ### Operation
 
