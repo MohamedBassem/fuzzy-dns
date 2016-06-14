@@ -102,8 +102,9 @@ Let's say we own the domain `example.com`. If you won't to resolve the subdomain
 - Copy the sample config `cp $GOPATH/src/github.com/MohamedBassem/fuzzy-dns/config.yml.sample config.yml`
 - Do the following changes to the config file:
   - Change the origin to `fuzzy.example.com`.
+  - Change the address to `0.0.0.0:53`.
   - Change the records to some that actually make sense.
-- Start the server with `$GOPATH/bin/fuzzy-dns --config config.yml`.
+- Start the server with `$GOPATH/bin/fuzzy-dns --config config.yml --verbose`. You must start the server as root to be able to bind to port 53.
 - In your browser try accessing `google.fuzzy.example.com` or `gogle.fuzzy.example.com` and they will all open the same IP you configured.
 
 *You should replace "example.com" with your actual domain in all the previous examples.*
