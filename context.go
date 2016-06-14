@@ -7,10 +7,13 @@ import (
 )
 
 const (
-	AType     = "A"
+	// AType is the A record string in the config
+	AType = "A"
+	// CNAMEType is the CNAME record string in the config
 	CNAMEType = "CNAME"
 )
 
+// A Context struct is one of the attributes of the Server struct. It carrys the global configuration for the server as well as the DNS records
 type Context struct {
 	Origin  string
 	Address string
@@ -18,6 +21,7 @@ type Context struct {
 	Records Records
 }
 
+// NewContextFromFile function reads and parses the config file.
 func NewContextFromFile(filename string) (*Context, error) {
 
 	file, err := ioutil.ReadFile(filename)
@@ -34,15 +38,25 @@ func NewContextFromFile(filename string) (*Context, error) {
 	return &ctx, nil
 }
 
+// Record struct represents a single DNS record.
 type Record struct {
+	// The subdomain
 	Host string
+
+	// Record type. Check the package constants
 	Type string
-	TTL  uint32
+
+	// Time to live
+	TTL uint32
+
+	// The record value
 	Data string
 }
 
+// Records type represents a set of records
 type Records []Record
 
+// ARecords returns all the records of type A.
 func (rs Records) ARecords() Records {
 	ret := Records{}
 	for _, r := range rs {
@@ -53,6 +67,7 @@ func (rs Records) ARecords() Records {
 	return ret
 }
 
+// CNAMERecords returns all the records of type CNAME.
 func (rs Records) CNAMERecords() Records {
 	ret := Records{}
 	for _, r := range rs {

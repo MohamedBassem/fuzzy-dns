@@ -14,9 +14,18 @@ import (
 	"github.com/renstrom/fuzzysearch/fuzzy"
 )
 
+// Server struct is the main server itself carrying the global context and the logger
 type Server struct {
 	ctx    *Context
 	logger *log.Logger
+}
+
+// NewServer creates a new server instance
+func NewServer(ctx *Context, logger *log.Logger) *Server {
+	return &Server{
+		ctx:    ctx,
+		logger: logger,
+	}
 }
 
 func (s *Server) trimOrigin(name string) string {
@@ -116,9 +125,8 @@ func (s *Server) handleQuestion(q dns.Question) []dns.RR {
 		as := s.handleARecords(q.Name)
 		if as == nil || len(as) == 0 {
 			return s.handleCNAMERecords(q.Name, true)
-		} else {
-			return as
 		}
+		return as
 
 	case dns.TypeCNAME:
 		return s.handleCNAMERecords(q.Name, false)
@@ -129,6 +137,7 @@ func (s *Server) handleQuestion(q dns.Question) []dns.RR {
 
 }
 
+// LoggedRequest is a DNS handler function to wrap the original handler with a query logger
 func (s *Server) LoggedRequest(f dns.HandlerFunc) dns.HandlerFunc {
 
 	return func(w dns.ResponseWriter, r *dns.Msg) {
@@ -137,6 +146,7 @@ func (s *Server) LoggedRequest(f dns.HandlerFunc) dns.HandlerFunc {
 	}
 }
 
+// HandleRequest is the main request handler. It recieves, parses and responds to the DNS queries.
 func (s *Server) HandleRequest(w dns.ResponseWriter, r *dns.Msg) {
 	resp := &dns.Msg{}
 	resp.SetReply(r)
@@ -180,10 +190,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	s := Server{
-		ctx:    ctx,
-		logger: logger,
-	}
+	s := NewServer(ctx, logger)
 
 	dns.HandleFunc(".", s.LoggedRequest(s.HandleRequest))
 	logger.Printf("Server listening to address: %v\n", s.ctx.Address)
