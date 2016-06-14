@@ -1,5 +1,11 @@
 package main
 
+import (
+	"io/ioutil"
+
+	"gopkg.in/yaml.v1"
+)
+
 const (
 	AType     = "A"
 	CNAMEType = "CNAME"
@@ -11,6 +17,22 @@ type Context struct {
 	}
 
 	Records Records
+}
+
+func NewContextFromFile(filename string) (*Context, error) {
+
+	file, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	ctx := Context{}
+	err = yaml.Unmarshal(file, &ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ctx, nil
 }
 
 type Record struct {

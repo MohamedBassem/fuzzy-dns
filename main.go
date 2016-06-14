@@ -1,8 +1,12 @@
 package main
 
 import (
+	"flag"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"net"
+	"os"
 	"sort"
 	"strings"
 
@@ -11,7 +15,8 @@ import (
 )
 
 type Server struct {
-	ctx *Context
+	ctx    *Context
+	logger *log.Logger
 }
 
 func (s *Server) trimOrigin(name string) string {
@@ -136,9 +141,36 @@ func (s *Server) HandleRequest(w dns.ResponseWriter, r *dns.Msg) {
 }
 
 func main() {
-	s := Server{}
+
+	configFile := flag.String("config", "", "Config file path")
+	verbose := flag.Bool("verbose", false, "Verbose log with each request")
+	flag.Parse()
+
+	var logger *log.Logger
+	if *verbose {
+		logger = log.New(os.Stdout, "", log.LstdFlags)
+	} else {
+		logger = log.New(ioutil.Discard, "", log.LstdFlags)
+	}
+
+	if *configFile == "" {
+		fmt.Println("--config flag cannot be empty")
+		os.Exit(1)
+	}
+
+	ctx, err := NewContextFromFile(*configFile)
+	if err != nil {
+		fmt.Println("Error: Failed parsing config: " + err.Error())
+		os.Exit(1)
+	}
+
+	s := Server{
+		ctx:    ctx,
+		logger: logger,
+	}
+
 	dns.HandleFunc(".", s.HandleRequest)
 	server := &dns.Server{Addr: "0.0.0.0:5333", Net: "udp"}
-	err := server.ListenAndServe()
+	err = server.ListenAndServe()
 	fmt.Println(err)
 }
