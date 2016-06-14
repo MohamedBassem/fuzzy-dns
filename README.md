@@ -1,6 +1,6 @@
-## fuzzy-dns
+## Fuzzy DNS
 
-A very simple domain name server that fuzzily matches its records. This fuzzy matching allows typos in the subdomains. For example, if the subdomain name is "google.example.com", opening (gogle.example.com, googl.example.com or ggl.example.com) will all work.
+A very simple domain name server that fuzzily matches its records. This fuzzy matching tolerates typos in the subdomains. For example, if the subdomain name is "google.example.com", opening (gogle.example.com, googl.example.com or ggl.example.com) will all work.
 
 ***Currently only A and CNAME records are supported.***
 
@@ -13,20 +13,20 @@ Because it's fun. I googled and I didn't find something like this, so I implemen
 The sample configuration contains :
 
 ```yaml
-# Origin which is the domain suffix to be trimmed
+# The domain suffix to be trimmed
 origin: "example.com"
 
 # The bind address
 address: "0.0.0.0:5333"
 
 records:
-    # The subdomain
+      # The subdomain
     - host: "google"
-    # Time to live
+      # Time to live
       ttl: 0
-    # Record type
+      # Record type
       type: "A"
-    # Record Value
+      # Record Value
       data: "1.1.1.1"
     - host: "willfind"
       ttl: 0
@@ -35,6 +35,7 @@ records:
     - host: "wontfind"
       ttl: 0
       type: "CNAME"
+      # Notice the trailing dot
       data: "willfind.example.com."
 ```
 
@@ -71,13 +72,13 @@ gogle.example.com.      0       IN      A       1.1.1.1
 $ dig +noall +answer @localhost -p 5333 A ggl.example.com
 ggl.example.com.        0       IN      A       1.1.1.1
 
-# If there are not matches in the A records, CNAME records are matched
+# If there aren't any matches in the A records, CNAME records are matched
 # According to RFC 1035.
 $ dig +noall +answer @localhost -p 5333 A wontfind.example.com
 wontfind.example.com.   0       IN      CNAME   willfind.example.com.
 willfind.example.com.   0       IN      A       1.1.1.2
 
-# Same with a typo
+# Same as the previous example but with a typo
 $ dig +noall +answer @localhost -p 5333 A wontfd.example.com
 wontfd.example.com.     0       IN      CNAME   willfind.example.com.
 willfind.example.com.   0       IN      A       1.1.1.2
@@ -103,9 +104,9 @@ Quoting RFC 1035 :
 
 ### TODO
 
-[] MX. It will be fun to tolerate typos in email domains
-[] AAAA records
-[] Tests
+- [ ] MX. It will be fun to tolerate typos in email domains
+- [ ] AAAA records
+- [ ] Tests
 
 ##Contribution
 Your contributions and ideas are welcomed through issues and pull requests.
