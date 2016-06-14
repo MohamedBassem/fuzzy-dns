@@ -71,6 +71,14 @@ gogle.example.com.      0       IN      A       1.1.1.1
 $ dig +noall +answer @localhost -p 5333 A ggl.example.com
 ggl.example.com.        0       IN      A       1.1.1.1
 
+# Querying another domain
+$ dig +noall +answer @localhost -p 5333 A willfind.example.com
+willfind.example.com.   0       IN      A       1.1.1.2
+
+# With a typo
+$ dig +noall +answer @localhost -p 5333 A wllfid.example.com
+willfid.example.com.    0       IN      A       1.1.1.2
+
 # If there aren't any matches in the A records, CNAME records are matched
 # According to RFC 1035.
 $ dig +noall +answer @localhost -p 5333 A wontfind.example.com
