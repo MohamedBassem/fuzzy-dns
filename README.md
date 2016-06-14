@@ -97,7 +97,7 @@ wontfind.example.com.   0       IN      CNAME   willfind.example.com.
 
 #### Actual Deployment
 
-Let's say we own the domain `example.com`. If you won't to resolve the subdomains of `fuzzy.example.com` fuzzily you should do the following:
+Let's say we own the domain `example.com`. If you want to resolve the subdomains of `fuzzy.example.com` fuzzily you should do the following:
 
 *Note, it can also be done with the subdomains of "example.com" directly, but you probably don't want to do this while the server is still in beta*
 
