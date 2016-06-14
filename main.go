@@ -90,7 +90,7 @@ func (s *Server) handleCNAMERecords(originalName string, rec bool) []dns.RR {
 		})
 	}
 
-	// According to RFC1035, an exact match on the whole zonefile for the
+	// According to RFC1034, an exact match on the whole zonefile for the
 	// A record should be done.
 	if rec {
 		as := s.ctx.Records.ARecords()

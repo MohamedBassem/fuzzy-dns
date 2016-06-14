@@ -80,7 +80,7 @@ $ dig +noall +answer @localhost -p 5333 A wllfid.example.com
 willfid.example.com.    0       IN      A       1.1.1.2
 
 # If there aren't any matches in the A records, CNAME records are matched
-# According to RFC 1035.
+# According to RFC 1034.
 $ dig +noall +answer @localhost -p 5333 A wontfind.example.com
 wontfind.example.com.   0       IN      CNAME   willfind.example.com.
 willfind.example.com.   0       IN      A       1.1.1.2
@@ -124,9 +124,9 @@ Let's say we own the domain `example.com`. If you want to resolve the subdomains
 
 ### Operation
 
-If the query is asking for an A record. A records are fuzzily searched. If the server couldn't find any matches in the A records, CNAME records are then fuzzily searched. This behaviour is similar to what's mentioned in RFC 1035.
+If the query is asking for an A record. A records are fuzzily searched. If the server couldn't find any matches in the A records, CNAME records are then fuzzily searched. This behaviour is similar to what's mentioned in RFC 1034.
 
-Quoting RFC 1035 :
+Quoting RFC 1034 :
 > "CNAME RRs cause special action in DNS software.  When a name server
 > fails to find a desired RR in the resource set associated with the
 > domain name, it checks to see if the resource set consists of a CNAME
