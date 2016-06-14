@@ -95,6 +95,10 @@ $ dig +noall +answer @localhost -p 5333 CNAME wontfind.example.com
 wontfind.example.com.   0       IN      CNAME   willfind.example.com.
 ```
 
+And here's the demo
+
+[![asciicast](https://asciinema.org/a/48805.png)](https://asciinema.org/a/48805)
+
 #### Actual Deployment
 
 Let's say we own the domain `example.com`. If you want to resolve the subdomains of `fuzzy.example.com` fuzzily you should do the following:
