@@ -1,0 +1,22 @@
+{
+	"version": 0,
+	"dependencies": [
+		{
+			"importpath": "github.com/miekg/dns",
+			"repository": "https://github.com/miekg/dns",
+			"vcs": "git",
+			"revision": "b51e305bc6e50b1ad8e57357ae699a1c0a362070",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/renstrom/fuzzysearch/fuzzy",
+			"repository": "https://github.com/renstrom/fuzzysearch",
+			"vcs": "git",
+			"revision": "2d205ac6ec17a839a94bdbfd16d2fa6c6dada2e0",
+			"branch": "master",
+			"path": "/fuzzy",
+			"notests": true
+		}
+	]
+}
