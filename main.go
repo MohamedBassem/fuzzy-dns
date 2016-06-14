@@ -46,14 +46,15 @@ func (s *Server) fuzzyMatchHost(name string, rs Records) Records {
 	return ret
 }
 
-func (s *Server) handleARecords(name string) []dns.RR {
+func (s *Server) handleARecords(originalName string) []dns.RR {
+	name := s.trimOrigin(originalName)
 	as := s.ctx.Records.ARecords()
 	matches := s.fuzzyMatchHost(name, as)
 	ret := []dns.RR{}
 	for _, m := range matches {
 		ret = append(ret, &dns.A{
 			Hdr: dns.RR_Header{
-				Name:   name,
+				Name:   originalName,
 				Rrtype: dns.TypeA,
 				Class:  dns.ClassINET,
 				Ttl:    m.TTL,
@@ -64,14 +65,15 @@ func (s *Server) handleARecords(name string) []dns.RR {
 	return ret
 }
 
-func (s *Server) handleCNAMERecords(name string) []dns.RR {
+func (s *Server) handleCNAMERecords(originalName string) []dns.RR {
+	name := s.trimOrigin(originalName)
 	cs := s.ctx.Records.CNAMERecords()
 	matches := s.fuzzyMatchHost(name, cs)
 	ret := []dns.RR{}
 	for _, m := range matches {
 		ret = append(ret, &dns.CNAME{
 			Hdr: dns.RR_Header{
-				Name:   name,
+				Name:   originalName,
 				Rrtype: dns.TypeCNAME,
 				Class:  dns.ClassINET,
 				Ttl:    m.TTL,
@@ -84,12 +86,13 @@ func (s *Server) handleCNAMERecords(name string) []dns.RR {
 	// A record should be done.
 	as := s.ctx.Records.ARecords()
 	for _, c := range matches {
-		name := s.trimOrigin(c.Data)
+		oname := c.Data
+		name := s.trimOrigin(oname)
 		for _, a := range as {
 			if a.Host == name {
 				ret = append(ret, &dns.A{
 					Hdr: dns.RR_Header{
-						Name:   name,
+						Name:   oname,
 						Rrtype: dns.TypeA,
 						Class:  dns.ClassINET,
 						Ttl:    a.TTL,
@@ -108,7 +111,7 @@ func (s *Server) handleQuestion(q dns.Question) []dns.RR {
 	switch q.Qtype {
 
 	case dns.TypeA:
-		as := s.handleARecords(s.trimOrigin(q.Name))
+		as := s.handleARecords(q.Name)
 		if as == nil || len(as) == 0 {
 			return s.handleCNAMERecords(q.Name)
 		} else {
@@ -131,6 +134,7 @@ func (s *Server) LoggedRequest(f dns.HandlerFunc) dns.HandlerFunc {
 		f(w, r)
 	}
 }
+
 func (s *Server) HandleRequest(w dns.ResponseWriter, r *dns.Msg) {
 	resp := &dns.Msg{}
 	resp.SetReply(r)
@@ -142,7 +146,10 @@ func (s *Server) HandleRequest(w dns.ResponseWriter, r *dns.Msg) {
 		}
 	}
 
-	w.WriteMsg(resp)
+	err := w.WriteMsg(resp)
+	if err != nil {
+		s.logger.Println(err.Error())
+	}
 	w.Close()
 
 }
