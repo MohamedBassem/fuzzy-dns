@@ -8,7 +8,7 @@ A very simple domain name server that fuzzily matches its records. This fuzzy ma
 
 ### Why?
 
-Because it's fun. I googled and I didn't find something like this, so I implemented it. Is it useful? Honestly, I don't know.
+Because it's fun. I googled and I didn't find something like this, so I implemented it. I learned [some things](http://blog.mbassem.com/2016/06/14/fuzzy-dns/) also while building it. Is it useful? Honestly, I don't know.
 
 ### Configuration
 
